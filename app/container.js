@@ -14,7 +14,8 @@ module.exports = appjector
     './app/src',
     {
       'twitter' : {
-        require : ['core', 'appswitch', 'conf']
-      }
+        require : ['core', 'appswitch', 'conf', 'models']
+      },
+      'models' : {}
     }
   );

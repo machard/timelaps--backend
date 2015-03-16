@@ -3,7 +3,8 @@
 var _ = require('lodash');
 var t = require('transducers-js');
 
-module.exports = function(utils) {
+module.exports = function(conf) {
+
   return {
     'clean' : t.map(function(tweet) {
       if (tweet.coordinates) {
@@ -25,14 +26,21 @@ module.exports = function(utils) {
     }),
 
     'extractmedias' : t.mapcat(function(tweet) {
+      function urlmediatype(url) {
+        var terms = conf.get('twitter_url_media_terms');
+
+        return _.find(terms, function(term) {
+          return url.indexOf(term) > -1;
+        });
+      }
       return Array.prototype.concat.call(
         _.chain(tweet.urls)
           .filter(function(url) {
-            return !!utils.urlmediatype(url.expanded_url);
+            return !!urlmediatype(url.expanded_url);
           })
           .map(function(url) {
             return {
-              type : utils.urlmediatype(url.expanded_url),
+              type : urlmediatype(url.expanded_url),
               data : url.expanded_url,
               position : tweet.coordinates
             };
