@@ -11,5 +11,10 @@ module.exports = appjector
       core : restifooseMQ,
       appswitch : appjector.AppSwitch
     },
-    './app/src'
+    './app/src',
+    {
+      'twitter' : {
+        require : ['core', 'appswitch', 'conf']
+      }
+    }
   );

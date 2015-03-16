@@ -31,6 +31,7 @@
     "async": "^0.9.0",
     "convict": "^0.6.0",
     "express-useragent": "^0.1.2",
+    "highland": "^2.4.0",
     "jwt-simple": "^0.2.0",
     "lodash": "^2.4.1",
     "node-gcm": "^0.9.12",
@@ -38,6 +39,9 @@
     "passport": "^0.2.1",
     "passport-http-bearer": "^1.0.1",
     "passport-local": "^1.0.0",
-    "restifoosemq" : "https://axthima:parabole@bitbucket.org/axthima/restifoosemq.git"
+    "quadtree": "^1.0.2",
+    "restifoosemq": "https://axthima:parabole@bitbucket.org/axthima/restifoosemq.git",
+    "transducers-js": "^0.4.135",
+    "twit": "^1.1.20"
   }
 }
