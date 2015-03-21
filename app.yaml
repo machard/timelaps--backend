@@ -5,3 +5,9 @@ api_version: 1
 
 manual_scaling:
   instances: 1
+
+handlers:
+
+- url: /.*
+  script: app.js
+  login: optional

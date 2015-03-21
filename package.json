@@ -4,8 +4,7 @@
   "description": "The shotgun day API",
   "main": "index.js",
   "scripts": {
-    "test": "grunt test",
-    "start" : "node index.js"
+    "test": "grunt test"
   },
   "repository": {
     "type": "git",
