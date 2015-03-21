@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var t = require('transducers-js');
+var quadtree = require('quadtree');
 
 module.exports = function(conf) {
 
@@ -18,6 +19,11 @@ module.exports = function(conf) {
 
         tweet.coordinates = [x, y];
       }
+
+      tweet.zone = quadtree.encode({
+        lat : tweet.coordinates[1],
+        lng : tweet.coordinates[0]
+      }, conf.get('quadtree_precision'));
 
       tweet.eentities = tweet.extended_entities || {};
       tweet.urls = tweet.entities.urls;
@@ -42,7 +48,9 @@ module.exports = function(conf) {
             return {
               type : urlmediatype(url.expanded_url),
               data : url.expanded_url,
-              position : tweet.coordinates
+              position : tweet.coordinates,
+              zone : tweet.zone,
+              id : tweet.id_str
             };
           })
           .value(),
@@ -51,7 +59,9 @@ module.exports = function(conf) {
           return {
             type : media.type,
             data : media,
-            position : tweet.coordinates
+            position : tweet.coordinates,
+            zone : tweet.zone,
+            id : tweet.id_str
           };
         })
       );

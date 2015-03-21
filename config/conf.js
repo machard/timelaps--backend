@@ -41,6 +41,12 @@ module.exports = function() {
       default : 'amqp://localhost',
       env : 'RABBIT_URI'
     },
+    quadtree_precision : {
+      doc : ' the lowest precision we deal with',
+      format : Number,
+      default : 8,
+      env : 'QUADTREE_PRECISION'
+    },
     twitter_consumer_key : {
       doc : ' twitter',
       format : Array,

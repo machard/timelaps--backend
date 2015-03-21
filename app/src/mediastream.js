@@ -2,8 +2,10 @@
 
 var __ = require('highland');
 
-module.exports = function(twitter) {
+module.exports = function(twitter, core) {
   var streams = {};
+  var rabbit = core.get('rabbit');
+  var mediapub = rabbit.socket('PUB', 'media', {routing : 'topic'});
 
   // twitter stream
   var transducers = twitter.get('transducers');
@@ -14,5 +16,14 @@ module.exports = function(twitter) {
 
   //
 
-  return __.values(streams).merge();
+  var mediastream = __.values(streams).merge();
+
+  mediastream
+    .fork()
+    .map(function(media) {
+      return rabbit.event(media, media.zone.split('').join('.'));
+    })
+    .pipe(mediapub);
+
+  return mediastream;
 };
