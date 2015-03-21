@@ -11,7 +11,8 @@ module.exports = function(grunt) {
         LOGGER_LEVEL : 40
       },
       dev : {
-        PORT : 5455
+        PORT : 5455,
+        RABBIT_URI : 'amqp://localhost'
       }
     },
     mochaTest : {
