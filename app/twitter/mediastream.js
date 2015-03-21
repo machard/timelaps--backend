@@ -5,14 +5,15 @@ var _ = require('lodash');
 
 var conf = require('../config');
 var geostream = require('./geostream');
+var Media = require('../models/media');
 
 var mediastream = __();
 
 geostream
   .fork()
-  .each(function(tweet) {
+  .each(function(geotweet) {
 
-    _.each(tweet.urls, function(url) {
+    _.each(geotweet.urls, function(url) {
 
       var terms = conf.get('twitter_url_media_terms');
 
@@ -21,24 +22,17 @@ geostream
       });
 
       if (type) {
-        mediastream.write({
-          type : type,
-          data : url.expanded_url,
-          position : tweet.coordinates,
-          zone : tweet.zone,
-          id : tweet.id_str
-        });
+        var media = {
+          id : geotweet.id,
+          url : url.expanded_url
+        };
+        mediastream.write(new Media(type, media, geotweet.position));
       }
     });
 
-    _.each(tweet.eentities.media, function(media) {
-      mediastream.write({
-        type : media.type,
-        data : media,
-        position : tweet.coordinates,
-        zone : tweet.zone,
-        id : tweet.id_str
-      });
+    _.each(geotweet.eentities.media, function(media) {
+      media.id = geotweet.id;
+      mediastream.write(new Media(media.type, media, geotweet.position));
     });
 
   });

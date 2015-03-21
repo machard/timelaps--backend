@@ -8,6 +8,7 @@ var _ = require('lodash');
 var conf = require('../config');
 var appswitch = require('../core/appswitch');
 var logger = require('../core/logger');
+var Geotweet = require('./geotweet');
 
 var nb = conf.get('twitter_regions').length;
 var stream = __();
@@ -75,27 +76,7 @@ stream.on('reconnect', function() {
 });
 
 stream = stream.map(function(tweet) {
-  if (tweet.coordinates) {
-    tweet.coordinates = tweet.coordinates.coordinates;
-  }
-
-  if (!tweet.coordinates) {
-    var c = tweet.place.bounding_box.coordinates[0];
-    var x = (c[0][0] + c[1][0] + c[2][0] + c[3][0]) / 4;
-    var y = (c[0][1] + c[1][1] + c[2][1] + c[3][1]) / 4;
-
-    tweet.coordinates = [x, y];
-  }
-
-  tweet.zone = quadtree.encode({
-    lat : tweet.coordinates[1],
-    lng : tweet.coordinates[0]
-  }, conf.get('quadtree_precision'));
-
-  tweet.eentities = tweet.extended_entities || {};
-  tweet.urls = tweet.entities.urls;
-
-  return tweet;
+  return new Geotweet(tweet);
 });
 
 module.exports = stream;
