@@ -32,7 +32,7 @@ var conf = convict({
   rabbituri : {
     doc : ' the rabbitmq uri',
     format : String,
-    default : 'amqp://tweetcam:78Ey;qAw9_AN5S@104.197.27.47',
+    default : 'amqp://localhost',
     env : 'RABBIT_URI'
   },
   quadtree_precision : {
