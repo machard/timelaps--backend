@@ -12,7 +12,6 @@ var rabbit = require('rabbit.js');
 
 var conf = require('../config');
 var logger = require('./logger');
-var appswitch = require('./appswitch');
 
 function Event(data, topic) {
   this.data = data;
@@ -136,7 +135,6 @@ rm.on('socket unavailable', function(name) {
   logger.error('socket unavailable', name);
 });
 
-appswitch.onStart(rm.init);
-appswitch.onStop(rm.stop);
+rm.init();
 
 module.exports = rm;

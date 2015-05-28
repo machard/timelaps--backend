@@ -6,7 +6,6 @@ var __ = require('highland');
 var _ = require('lodash');
 
 var conf = require('../config');
-var appswitch = require('../core/appswitch');
 var logger = require('../core/logger');
 var Geotweet = require('./geotweet');
 
@@ -27,36 +26,23 @@ var T = _.map(_.range(0, nb), function(i) {
   return t;
 });
 
-appswitch.onStart(function(callback) {
-  _s = _.map(T, function(t) {
-    return t.stream('statuses/filter', {
-      locations : _.map(t.regions, function(region) {
-        var bb = quadtree.bbox(region);
+_s = _.map(T, function(t) {
+  return t.stream('statuses/filter', {
+    locations : _.map(t.regions, function(region) {
+      var bb = quadtree.bbox(region);
 
-        return [bb.minlng, bb.minlat, bb.maxlng, bb.maxlat].join(',');
-      })
-    });
+      return [bb.minlng, bb.minlat, bb.maxlng, bb.maxlat].join(',');
+    })
   });
-
-  _.each(_s, function(s) {
-    s.on('tweet', _.bind(stream.write, stream));
-
-    s.on('limit', _.bind(stream.emit, stream, 'limit'));
-    s.on('error', _.bind(stream.emit, stream, 'error'));
-    s.on('connect', _.bind(stream.emit, stream, 'connect'));
-    s.on('reconnect', _.bind(stream.emit, stream, 'reconnect'));
-  });
-
-  callback();
 });
 
-appswitch.onStop(function(callback) {
-  _.each(_s, function(s) {
-    s.removeAllListeners();
-    s.stop();
-  });
+_.each(_s, function(s) {
+  s.on('tweet', _.bind(stream.write, stream));
 
-  callback();
+  s.on('limit', _.bind(stream.emit, stream, 'limit'));
+  s.on('error', _.bind(stream.emit, stream, 'error'));
+  s.on('connect', _.bind(stream.emit, stream, 'connect'));
+  s.on('reconnect', _.bind(stream.emit, stream, 'reconnect'));
 });
 
 stream.on('limit', function(t) {
