@@ -1,14 +1,15 @@
 'use strict';
 
 var convict = require('convict');
-
-var env = process.env.NODE_ENV || 'development';
+var fs = require('fs');
+var _ = require('lodash');
 
 var conf = convict({
   env : {
     doc : 'The applicaton environment.',
     format : ['production', 'development'],
-    default : env
+    default : 'development',
+    env : 'NODE_ENV'
   },
   name : {
     doc : 'The name of the API',
@@ -43,58 +44,29 @@ var conf = convict({
   twitter_consumer_key : {
     doc : ' twitter',
     format : Array,
-    default : [
-      //https://apps.twitter.com/app/8033815/show
-      'AQJzdkTSAjICgC0deGfYIyUTs',
-      //https://apps.twitter.com/app/8056888/show
-      'AEHPjf2gLv2nUWFnR1K35hPb9',
-      //https://apps.twitter.com/app/8092008/
-      'drjT7E0G2nhZtAP589wNlFPpj',
-      //https://apps.twitter.com/app/8092029
-      'j1RZd2cXOj5j3rZd3PIrjR0UP',
-      //https://apps.twitter.com/app/8092036
-      '683tYRrvozD0tDAMJFMdePlAT'
-    ],
+    default : [],
     env : 'twitter_consumer_key'
   },
   twitter_consumer_secret : {
     doc : ' twitter',
     format : Array,
-    default : [
-      'LWPKKiLL3Qzehy6PCp7Rhu5ZwFetJvKD11wnyrJvU5Yb0EcOiT',
-      'vaYJfJ2Qg911WWtXZ1TO1VjHClHHnVVghqu7XN8iHBomSLb4jT',
-      'FaHsr8biuUrg5yiMD2pfCgJuHEgIOvwAbxeSzVhNML3bEnYdEX',
-      '60pw8PgsjoiDPnG61p3kqahNxl2mQhrhtjGadnt4g0IJyGnafs',
-      'CVGA2czELEwFvEmnVBjCm8mZptmeSVJHtrHUzHBlQhalcUEiuA'
-    ],
+    default : [],
     env : 'twitter_consumer_secret'
   },
   twitter_consumer_access_token : {
     doc : ' twitter',
     format : Array,
-    default : [
-      '399917385-ZKN8NUSq4pCJO43SqKn60Y3BYG2myW79UgMYxtj2',
-      '399917385-QadN3nau1ZxX9X8BHbPQpYWtROX4XmMLaXCdrAFj',
-      '399917385-ntY6BUK6sCMnW17Jd8XZH1U2uw0tAnd0JaCfcsyq',
-      '399917385-OnLJwz6h963GliolHG2xYWTRTceQbnVZPxcTEkmp',
-      '399917385-Ha0pyw5yC4N5QBdQU2cqvzyFozSSB2xAhATpMpSf'
-    ],
+    default : [],
     env : 'twitter_consumer_access_token'
   },
   twitter_consumer_access_token_secret : {
     doc : ' twitter',
     format : Array,
-    default : [
-      'rQ5xDGgELBmwXXZx6BCOHMUq8SI3aHYHgEqShAvk9lSqK',
-      'RQQATyPKe9v27lh7rIRmGrz0pKNFymIVnxt979m5VjBSR',
-      'mZMxe2MZPl8nzVXLeKkYgt8GkKkApBXWmpQ7ZxtVRJiAo',
-      'lwjkJ2jtAUaJSkcQgL3Oi0PdO76GgKDUceFDPSzA6FRee',
-      'bTWUr3EszVVsEKTFrHWixOaLBuMIuCX5G2kE3pFB23I3W'
-    ],
+    default : [],
     env : 'twitter_consumer_access_token_secret'
   },
   twitter_regions : {
-    doc : ' twitter',
+    doc : ' Regions associated with each twitter stream',
     format : Array,
     default : [
       ['00', '02'], // us ouest
@@ -115,5 +87,17 @@ var conf = convict({
     env : 'twitter_url_media_terms'
   }
 });
+
+var tCredentials = process.cwd() + '/.twitter';
+if (fs.existsSync(tCredentials)) {
+  conf.load(_.pick(JSON.parse(fs.readFileSync(tCredentials, 'utf8')), [
+    'twitter_consumer_key',
+    'twitter_consumer_secret',
+    'twitter_consumer_access_token',
+    'twitter_consumer_access_token_secret'
+  ]));
+}
+
+conf.validate();
 
 module.exports = conf;
