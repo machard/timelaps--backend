@@ -1,15 +1,11 @@
 {
-  "name": "shotgunday-api",
+  "name": "timelaps-api",
   "version": "1.0.0",
-  "description": "The shotgun day API",
+  "description": "The timelaps backend",
   "main": "server.js",
   "scripts": {
     "test": "grunt test",
     "dev" : "grunt dev"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://axthima@bitbucket.org/axthima/shotgunday-api.git"
   },
   "author": "Matthieu Achard",
   "license": "ISC",
